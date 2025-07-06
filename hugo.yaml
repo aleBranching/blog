@@ -1,4 +1,4 @@
-baseURL: https://aleBranching.github.io/blog
+baseURL: "https://aleBranching.github.io/blog"
 languageCode: en-us
 title: Aleksas Blogs and Thoughts
 theme: ["PaperMod"]
@@ -8,7 +8,7 @@ params:
   homeInfoParams:
     Title: Hey
     # Content:
-    imageUrl: "/profile/standing.jpg" # optional
+    imageUrl: "profile/standing.jpg" # optional
     imageTitle: "<title of image as alt>" # optional
     imageWidth: 180 # custom size
     imageHeight: 180 # custom size
