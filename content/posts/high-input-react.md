@@ -3,7 +3,7 @@ date: '2025-07-06T21:31:59+01:00'
 draft: false
 title: 'Hight tab, high input react app: Or how I learned to stop listening to react docs and learn data flow.'
 cover:
-    image: /high-input-react/Strangelove.webp
+    image: high-input-react/Strangelove.webp
 ShowToc: true
 
 ---
@@ -12,11 +12,11 @@ ShowToc: true
 
 Firstly ignoring the technical details, let's go over the end goal of the web app. 
 
-![alt text](/high-input-react/image-1.png)
+![alt text](high-input-react/image-1.png)
 web app design
 
 
-![alt text](/high-input-react/image-2.png)
+![alt text](high-input-react/image-2.png)
 
 We would like to receive data from an API endpoint into our web app. Then within the web app we need to do CRUD (create, read, update, delete) and re-order some of the data before sending it off to the destination.
 
