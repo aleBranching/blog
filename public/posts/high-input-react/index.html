@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Hight tab, high input react app: Or how I learned to stop listening to react docs and learn data flow. | Aleksas Blogs and Thoughts</title>
+<meta name="keywords" content="">
+<meta name="description" content="Web app design
+Firstly ignoring the technical details, let&rsquo;s go over the end goal of the web app.
+
+web app design
+
+We would like to receive data from an API endpoint into our web app. Then within the web app we need to do CRUD (create, read, update, delete) and re-order some of the data before sending it off to the destination.
+user flow:
+
+New tabs can be created for a specific api endpoint.
+This brings up specific API endpoint parameters to fetch the data.
+Pressing get data will fetch the data into the data manipulation section.
+Switching from one tab to another would preserve any data manipulation that happened as well as the API parameters that were selected.
+
+Initial thoughts on state
+Ignoring React specifics, the natural way to represent the state would be a list of tabs. Each tab having a large JSON needed to render endpoint parameters and the data manipulation.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/high-input-react/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.18349164901dd2f8b7f4e6fe9dab2132aa2304e09127b5badaced545d5f7e4ad.css" integrity="sha256-GDSRZJAd0vi39Ob&#43;nashMqojBOCRJ7W62s7VRdX35K0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/high-input-react/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Aleksas Blogs and Thoughts (Alt + H)">Aleksas Blogs and Thoughts</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Hight tab, high input react app: Or how I learned to stop listening to react docs and learn data flow.
+    </h1>
+    <div class="post-meta"><span title='2025-07-06 21:31:59 +0100 BST'>July 6, 2025</span>&nbsp;·&nbsp;5 min
+
+</div>
+  </header> 
+<figure class="entry-cover">
+        <img loading="eager" src="http://localhost:1313/high-input-react/Strangelove.webp" alt="">
+        
+</figure><div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#web-app-design" aria-label="Web app design">Web app design</a></li>
+                <li>
+                    <a href="#initial-thoughts-on-state" aria-label="Initial thoughts on state">Initial thoughts on state</a></li>
+                <li>
+                    <a href="#react-state" aria-label="React state">React state</a><ul>
+                        
+                <li>
+                    <a href="#problems-of-this-approach" aria-label="Problems of this approach">Problems of this approach</a></li></ul>
+                </li>
+                <li>
+                    <a href="#rethinking-the-data-flow-in-react" aria-label="Rethinking the data flow in React">Rethinking the data flow in React</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="web-app-design">Web app design<a hidden class="anchor" aria-hidden="true" href="#web-app-design">#</a></h1>
+<p>Firstly ignoring the technical details, let&rsquo;s go over the end goal of the web app.</p>
+<p><img alt="alt text" loading="lazy" src="/high-input-react/image-1.png">
+web app design</p>
+<p><img alt="alt text" loading="lazy" src="/high-input-react/image-2.png"></p>
+<p>We would like to receive data from an API endpoint into our web app. Then within the web app we need to do CRUD (create, read, update, delete) and re-order some of the data before sending it off to the destination.</p>
+<p>user flow:</p>
+<ul>
+<li>New tabs can be created for a specific api endpoint.</li>
+<li>This brings up specific API endpoint parameters to fetch the data.</li>
+<li>Pressing get data will fetch the data into the data manipulation section.</li>
+<li>Switching from one tab to another would preserve any data manipulation that happened as well as the API parameters that were selected.</li>
+</ul>
+<h1 id="initial-thoughts-on-state">Initial thoughts on state<a hidden class="anchor" aria-hidden="true" href="#initial-thoughts-on-state">#</a></h1>
+<p>Ignoring React specifics, the natural way to represent the state would be a list of tabs. Each tab having a large JSON needed to render endpoint parameters and the data manipulation.</p>
+<p>Some of the endpoints contain a lot of data needing up to a total of 100 inputs.</p>
+<p><img alt="alt text" loading="lazy" src="/high-input-react/image-4.png"></p>
+<h1 id="react-state">React state<a hidden class="anchor" aria-hidden="true" href="#react-state">#</a></h1>
+<p>The Initiall approach to the project was to use react context. I would not run into prop drilling issue and I wrote a nice abstraction that let me manipulate any data of the current tab.
+This is the reducer function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">reducerFunc</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">draft</span>, <span style="color:#a6e22e">action</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span> (<span style="color:#a6e22e">action</span>.<span style="color:#a6e22e">type</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;currentTab&#34;</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">callback</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">action</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// debugger;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">theTab</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">draft</span>.<span style="color:#a6e22e">find</span>((<span style="color:#a6e22e">ele</span>) =&gt; <span style="color:#a6e22e">ele</span>.<span style="color:#a6e22e">current</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// debugger;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">callback</span>(<span style="color:#a6e22e">theTab</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>it is created with immer to allow mutating changes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">tabs</span>, <span style="color:#a6e22e">dispatch</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useImmerReducer</span>(<span style="color:#a6e22e">reducerFunc</span>, <span style="color:#a6e22e">inititialValues</span>);
+</span></span></code></pre></div><p>Then in order to change the state of the current tab I can just use a callback function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">dispatcher</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;currentTab&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">callback</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">currentTabDraft</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">delete</span> <span style="color:#a6e22e">currentTabDraft</span>.<span style="color:#a6e22e">season</span>;
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="problems-of-this-approach">Problems of this approach<a hidden class="anchor" aria-hidden="true" href="#problems-of-this-approach">#</a></h2>
+<p>Any state changes means everything re-renders. Using chrome dev tools, I did CPU slow down to 4x because my computer does not represent the users typical machine. Typing in an input can cause 100ms re-render. This is definitely noticable. While the react dev tools will cause the dev page to be slower, this is still a concerning performance if this project is to be used long term and new features are to be added.</p>
+<p>State still needs to be kept at the top since each tab holds all the information. An unlimited amount of tabs can be created.</p>
+<h1 id="rethinking-the-data-flow-in-react">Rethinking the data flow in React<a hidden class="anchor" aria-hidden="true" href="#rethinking-the-data-flow-in-react">#</a></h1>
+<p>I need all the data in the data manipulator for 2 reasons:</p>
+<ul>
+<li>Clicking into that tab</li>
+<li>sending data button</li>
+</ul>
+<p>Going through the react documentation it would lead you to believe that you need to move the state up into any component that needs the data including the button. But I only need that data later on. I don&rsquo;t need to &ldquo;React&rdquo; 🤯 to the data changes in my UI (except of course the input itself).</p>
+<p>One day I was browsing MDN documentation of all the web API&rsquo;s when indexdDB jumped into my eye and came up with the following solution:</p>
+<p><img alt="alt text" loading="lazy" src="/high-input-react/image-5.png"></p>
+<p>I store each tab as an entry to indexdb. Each of these entries is an object with all the data needed to represent the data manipulation component and the endpoint selection (endpoint selection was not drawn for simplicity).</p>
+<p>Clicking into a tab fetches the tab from indexDB. Then you load that data into the data manipulation component. From then on you can play with the state however you want within data manipulation and it will cause only a re-render within the component. You can of course seperate the state into further sub-components to only cause a re-render within that sub-component. The only rule is that any state change needs to be written into indexdDB. Firstly, the state is changed on key-stroke because the ui update is priority and only then written to indexdDB. If the write fails, revert back to old state.</p>
+<p>I won&rsquo;t go over the details of implementing indexDB in react as it has been mentioned elsewhere. I&rsquo;m trying to keep this post short.</p>
+<p>Here is an example of a subcomponent broken down to just an input:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ASinglePlayerProps</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span>: <span style="color:#66d9ef">IDBDatabase</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">currentTabId</span>: <span style="color:#66d9ef">number</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">AValue</span> <span style="color:#f92672">=</span> ({ <span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">db</span>, <span style="color:#a6e22e">currentTabId</span>, <span style="color:#a6e22e">passedName</span> }<span style="color:#f92672">:</span> <span style="color:#a6e22e">AValueProps</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">setName</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#a6e22e">passedName</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">handleChange</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">e</span>: <span style="color:#66d9ef">React.ChangeEvent</span>&lt;<span style="color:#f92672">HTMLInputElement</span>&gt;
+</span></span><span style="display:flex;"><span>  ) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">newValue</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">oldValue</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">name</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">setName</span>(<span style="color:#a6e22e">newValue</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">updateDBTab</span>&lt;<span style="color:#f92672">TypeRepresentingTab</span>&gt;(<span style="color:#a6e22e">db</span>, <span style="color:#a6e22e">currentTabId</span>, (<span style="color:#a6e22e">data</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">previewData</span>.<span style="color:#a6e22e">someList</span>[<span style="color:#a6e22e">index</span>].<span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">newValue</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">data</span>;
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;There was an error updating&#34;</span>, <span style="color:#a6e22e">error</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">toast</span>.<span style="color:#a6e22e">error</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Fatal error writting to database\nChanges are not being recorded&#34;</span>
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// in case write fails revert back
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">setName</span>(<span style="color:#a6e22e">oldValue</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">input</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">onChange</span><span style="color:#f92672">=</span>{(<span style="color:#a6e22e">e</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">handleChange</span>(<span style="color:#a6e22e">e</span>)}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">name</span>}
+</span></span><span style="display:flex;"><span>      /&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">AValue</span>;
+</span></span></code></pre></div><p>On input change only this component will re-render. And now react profiler is showing me 2.7ms re-render with 4x cpu slowdown. This is quite the jump. The application is noticably snappier.</p>
+<p>Then to use the send data button, you just access the database. The component can be placed anywhere within the component tree.</p>
+<p>Additionally indexdb persists data on closing the browser so the same data can be loaded in.</p>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>This is the solution I came up with and decided to share it as I could not find anything on the internet on how to handle information dense UI&rsquo;s in react.</p>
+<p>Of course there may be a state library that already does something similar. These days I&rsquo;m a bit more apprehensive to add dependencies to my project. I try to keep towards core web technologies. There&rsquo;s nothing worse than coming back to a project and some library like formik is deprecated or there has been breaking changes (shadcn).</p>
+<p>I would also argue that implementing indexdb into react is not that hard. It is also easy to understand what is actually happening compared to a state management library.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Aleksas Blogs and Thoughts</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

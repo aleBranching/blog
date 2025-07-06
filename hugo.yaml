@@ -1,0 +1,20 @@
+baseURL: https://example.org/
+languageCode: en-us
+title: Aleksas Blogs and Thoughts
+theme: ["PaperMod"]
+
+params:
+  homeInfoParams:
+    Title: Hey
+    # Content:
+    imageUrl: "/profile/standing.jpg" # optional
+    imageTitle: "<title of image as alt>" # optional
+    imageWidth: 180 # custom size
+    imageHeight: 180 # custom size
+  comments: true
+
+  socialIcons: # optional
+    - name: github
+      url: "https://github.com/aleBranching"
+
+  ShowReadingTime: true
