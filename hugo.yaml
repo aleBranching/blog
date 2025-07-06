@@ -2,6 +2,7 @@ baseURL: https://example.org/
 languageCode: en-us
 title: Aleksas Blogs and Thoughts
 theme: ["PaperMod"]
+publishDir: "docs"
 
 params:
   homeInfoParams:
