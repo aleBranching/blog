@@ -241,9 +241,9 @@ Ignoring React specifics, the natural way to represent the state would be a list
 
   <div class="post-content"><h1 id="web-app-design">Web app design<a hidden class="anchor" aria-hidden="true" href="#web-app-design">#</a></h1>
 <p>Firstly ignoring the technical details, let&rsquo;s go over the end goal of the web app.</p>
-<p><img alt="alt text" loading="lazy" src="high-input-react/image-1.png">
+<p><img alt="alt text" loading="lazy" src="/blog/high-input-react/image-1.png">
 web app design</p>
-<p><img alt="alt text" loading="lazy" src="high-input-react/image-2.png"></p>
+<p><img alt="alt text" loading="lazy" src="/blog/high-input-react/image-2.png"></p>
 <p>We would like to receive data from an API endpoint into our web app. Then within the web app we need to do CRUD (create, read, update, delete) and re-order some of the data before sending it off to the destination.</p>
 <p>user flow:</p>
 <ul>
@@ -255,7 +255,7 @@ web app design</p>
 <h1 id="initial-thoughts-on-state">Initial thoughts on state<a hidden class="anchor" aria-hidden="true" href="#initial-thoughts-on-state">#</a></h1>
 <p>Ignoring React specifics, the natural way to represent the state would be a list of tabs. Each tab having a large JSON needed to render endpoint parameters and the data manipulation.</p>
 <p>Some of the endpoints contain a lot of data needing up to a total of 100 inputs.</p>
-<p><img alt="alt text" loading="lazy" src="/high-input-react/image-4.png"></p>
+<p><img alt="alt text" loading="lazy" src="/blog/high-input-react/image-4.png"></p>
 <h1 id="react-state">React state<a hidden class="anchor" aria-hidden="true" href="#react-state">#</a></h1>
 <p>The Initiall approach to the project was to use react context. I would not run into prop drilling issue and I wrote a nice abstraction that let me manipulate any data of the current tab.
 This is the reducer function:</p>
@@ -291,7 +291,7 @@ This is the reducer function:</p>
 </ul>
 <p>Going through the react documentation it would lead you to believe that you need to move the state up into any component that needs the data including the button. But I only need that data later on. I don&rsquo;t need to &ldquo;React&rdquo; 🤯 to the data changes in my UI (except of course the input itself).</p>
 <p>One day I was browsing MDN documentation of all the web API&rsquo;s when indexdDB jumped into my eye and came up with the following solution:</p>
-<p><img alt="alt text" loading="lazy" src="/high-input-react/image-5.png"></p>
+<p><img alt="alt text" loading="lazy" src="/blog/high-input-react/image-5.png"></p>
 <p>I store each tab as an entry to indexdb. Each of these entries is an object with all the data needed to represent the data manipulation component and the endpoint selection (endpoint selection was not drawn for simplicity).</p>
 <p>Clicking into a tab fetches the tab from indexDB. Then you load that data into the data manipulation component. From then on you can play with the state however you want within data manipulation and it will cause only a re-render within the component. You can of course seperate the state into further sub-components to only cause a re-render within that sub-component. The only rule is that any state change needs to be written into indexdDB. Firstly, the state is changed on key-stroke because the ui update is priority and only then written to indexdDB. If the write fails, revert back to old state.</p>
 <p>I won&rsquo;t go over the details of implementing indexDB in react as it has been mentioned elsewhere. I&rsquo;m trying to keep this post short.</p>
