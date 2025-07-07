@@ -46,9 +46,7 @@ let reducerFunc = (draft, action) => {
   switch (action.type) {
     case "currentTab":
       const { callback } = action;
-      // debugger;
       let theTab = draft.find((ele) => ele.current == true);
-      // debugger;
       callback(theTab);
 
       break;
@@ -74,7 +72,7 @@ dispatcher({
 ```
 
 ## Problems of this approach
-Any state changes means everything re-renders. Using chrome dev tools, I did CPU slow down to 4x because my computer does not represent the users typical machine. Typing in an input can cause 100ms re-render. This is definitely noticable. While the react dev tools will cause the dev page to be slower, this is still a concerning performance if this project is to be used long term and new features are to be added. 
+Any state changes means everything re-renders. Using chrome dev tools, I did CPU slow down to 4x because my computer does not represent the users typical machine. Typing in an input can cause 100ms re-render. This is definitely noticable. While the react dev tools will cause the dev page to be slower, this is still a concerning performance if this project is to be used long term and new features are to be added. It should be noted that I have expensive to render components elsewhere. While useMemo exists it wouldn't solve the route issue. 
 
 
 
@@ -103,7 +101,7 @@ I won't go over the details of implementing indexDB in react as it has been ment
 Here is an example of a subcomponent broken down to just an input:
 
 ```typescript
-type ASinglePlayerProps = {
+type AValueProps = {
   index: number;
   db: IDBDatabase;
   currentTabId: number;
