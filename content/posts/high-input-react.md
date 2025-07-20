@@ -12,11 +12,11 @@ ShowToc: true
 
 Firstly ignoring the technical details, let's go over the end goal of the web app. 
 
-![alt text](/blog/high-input-react/image-1.png)
+![alt text](/high-input-react/image-1.png)
 web app design
 
 
-![alt text](/blog/high-input-react/image-2.png)
+![alt text](/high-input-react/image-2.png)
 
 We would like to receive data from an API endpoint into our web app. Then within the web app we need to do CRUD (create, read, update, delete) and re-order some of the data before sending it off to the destination.
 
@@ -35,7 +35,7 @@ Ignoring React specifics, the natural way to represent the state would be a list
 
 Some of the endpoints contain a lot of data needing up to a total of 100 inputs. 
 
-![alt text](/blog/high-input-react/image-4.png)
+![alt text](/high-input-react/image-4.png)
 
 # React state
 
@@ -89,7 +89,7 @@ Going through the react documentation it would lead you to believe that you need
 
 One day I was browsing MDN documentation of all the web API's when indexdDB jumped into my eye and came up with the following solution:
 
-![alt text](/blog/high-input-react/image-5.png)
+![alt text](/high-input-react/image-5.png)
 
 I store each tab as an entry to indexdb. Each of these entries is an object with all the data needed to represent the data manipulation component and the endpoint selection (endpoint selection was not drawn for simplicity). 
 
